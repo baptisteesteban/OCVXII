@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class EQNewton:
     def __init__(self, P, pas, epsilon=0.01):
@@ -30,3 +31,18 @@ class EQNewton:
         
         self.save = np.array(self.save)
         return x
+
+    def plot(self):
+        if self.P.f.dim != 2:
+            raise Exception("Plot is only implemented for dim 2")
+        plt.figure(figsize=(15, 15))
+        x, y = np.linspace(-5, 5, 100), np.linspace(-5, 5, 100)
+        X, Y = np.meshgrid(x, y)
+        x_y = np.vstack([X.reshape(1, -1), Y.reshape(1, -1)]).reshape(2, -1)
+        z = self.P.f.value(x_y)
+        plt.contour(X, Y, z.reshape(100, -1), 15)
+        plt.scatter(self.save[:, 0], self.save[:, 1], 50, c="red")
+        x_p = np.linspace(-5, 5, 100)
+        plt.plot(x_p, -1 * (self.P.A[0, 0] / self.P.A[0, 1]) * x_p + (self.P.b[0] / self.P.A[0, 1]))
+        plt.grid()
+        plt.show()
