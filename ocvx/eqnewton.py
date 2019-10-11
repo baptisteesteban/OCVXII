@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 
 class EQNewton:
     def __init__(self, P, pas, epsilon=0.01):
+        if P.A is None:
+            raise Exception("Probleme should have constraints")
         self.epsilon = epsilon
         self.P = P
         self.pas = pas
