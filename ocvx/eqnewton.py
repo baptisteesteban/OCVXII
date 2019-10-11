@@ -8,11 +8,11 @@ class EQNewton:
         self.save = np.array([])
         
     def _newtonStep(self, x):
-        KKT = np.vstack([np.hstack([self.P.f.hessian(x), self.P.A.T]), np.hstack([self.P.A, np.zeros((self.P.A.T.shape[1], self.P.A.T.shape[1])).astype(P.A.dtype)])])
-        g = P.f.grad(x)
+        KKT = np.vstack([np.hstack([self.P.f.hessian(x), self.P.A.T]), np.hstack([self.P.A, np.zeros((self.P.A.T.shape[1], self.P.A.T.shape[1])).astype(self.P.A.dtype)])])
+        g = self.P.f.grad(x)
         res = np.hstack([-1 * g, np.zeros((KKT.shape[0] - g.shape[0]))])
         x_out = np.linalg.solve(KKT, res)
-        return x_out[:P.f.dim]
+        return x_out[:self.P.f.dim]
         
     def __call__(self, x0):
         self.save = []
