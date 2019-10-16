@@ -8,5 +8,13 @@ class Function:
         self.hessian = hessian
 
 class Probleme:
-    def __init__(self, f):
+    def __init__(self, f, A=None, b=None):
+        if A is not None:
+            if np.linalg.matrix_rank(A) >= f.dim:
+                raise Exception("Dimension error: rg(A) >= f.dim")
+
+        if (A is None and b is not None) or (A is not None and b is None):
+            raise Exception("Problem have to be equality constrained or not, not half")
         self.f = f
+        self.A = A
+        self.b = b
