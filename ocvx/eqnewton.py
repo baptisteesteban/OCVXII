@@ -18,8 +18,10 @@ class EQNewton:
         return x_out[:self.P.f.dim]
         
     def __call__(self, x0):
+        if not self.P.A.dot(x0)[:] == self.P.b[:]:
+            raise Exception("Entry point is not feasable")
         self.save = []
-        
+    
         x = x0
         self.save.append(x)
         dxN = self._newtonStep(x)
@@ -37,14 +39,15 @@ class EQNewton:
     def plot(self):
         if self.P.f.dim != 2:
             raise Exception("Plot is only implemented for dim 2")
+        if self.save.shape[0] == 0:
+            raise Exception("The equality constrained Newton method did not run.")
         plt.figure(figsize=(15, 15))
-        x, y = np.linspace(-5, 5, 100), np.linspace(-5, 5, 100)
+        x, y = np.linspace(-1 * self.save[:, 0].max() - 5, self.save[:, 0].max() + 5, 200), np.linspace(- 1 * self.save[:, 1].max() - 5, self.save[:, 1].max() + 5, 200)
         X, Y = np.meshgrid(x, y)
         x_y = np.vstack([X.reshape(1, -1), Y.reshape(1, -1)]).reshape(2, -1)
         z = self.P.f.value(x_y)
-        plt.contour(X, Y, z.reshape(100, -1), 15)
+        plt.contour(X, Y, z.reshape(200, -1), 15, cmap="hot_r")
         plt.scatter(self.save[:, 0], self.save[:, 1], 50, c="red")
-        x_p = np.linspace(-5, 5, 100)
-        plt.plot(x_p, -1 * (self.P.A[0, 0] / self.P.A[0, 1]) * x_p + (self.P.b[0] / self.P.A[0, 1]))
+        plt.plot(x, -1 * (self.P.A[0, 0] / self.P.A[0, 1]) * x + (self.P.b[0] / self.P.A[0, 1]))
         plt.grid()
         plt.show()

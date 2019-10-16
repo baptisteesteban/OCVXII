@@ -11,13 +11,16 @@ class GradientDescent:
     def __call__(self, x0):
         x = x0
         self.save = []
+        self.directions = []
         self.save.append(x)
         while np.linalg.norm(self.P.f.grad(x)) > self.epsilon:
             dx = -1 * self.P.f.grad(x)
+            self.directions.append(dx)
             (t, _) = self.pas(self.P.f, x)
             x = x + t * dx
             self.save.append(x)
         self.save = np.array(self.save)
+        self.directions = np.array(self.directions)
         return x
 
     def plot(self):
@@ -25,14 +28,15 @@ class GradientDescent:
             raise Exception("The gradient descent algorithm did not run.")
         if self.P.f.dim == 1:
             plt.figure(figsize=(15, 15))
-            x = np.linspace(-1 * self.save.max() - 5, self.save.max() + 5, 1000).reshape((1, -1))
+            x = np.linspace(-1 * self.save.min() - 5, self.save.max() + 5, 1000).reshape((1, -1))
             plt.plot(x.reshape((-1)), self.P.f.value(x))
             plt.scatter(self.save[:, 0], self.P.f.value(self.save[:, 0].reshape(1, -1)), 50, c="red")
+            plt.quiver(self.save[:, 0], self.P.f.value(self.save[:, 0]), self.directions[:, 0])
             plt.grid()
             plt.show()
         elif self.P.f.dim == 2:
             plt.figure(figsize=(15, 15))
-            x, y = np.linspace(-1 * self.save[:, 0].max() - 5, self.save[:, 0].max() + 5, 200), np.linspace(- 1 * self.save[:, 1].max() - 5, self.save[:, 1].max() + 5, 200)
+            x, y = np.linspace(self.save[:, 0].min() - 5, self.save[:, 0].max() + 5, 200), np.linspace(self.save[:, 1].min() - 5, self.save[:, 1].max() + 5, 200)
             X, Y = np.meshgrid(x, y)
             x_y = np.vstack([X.reshape(1, -1), Y.reshape(1, -1)]).reshape(2, -1)
             plt.contour(X, Y, self.P.f.value(x_y).reshape(200, -1), 15)
@@ -40,4 +44,4 @@ class GradientDescent:
             plt.grid()
             plt.show()
         else:
-            raise Exception("Plot in", self.P.f.dim, "not implemented")
+            raise Exception("Plot in dim", self.P.f.dim, "not implemented")
