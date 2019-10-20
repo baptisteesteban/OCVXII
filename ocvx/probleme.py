@@ -10,7 +10,8 @@ class Function:
 class Probleme:
     def __init__(self, f, A=None, b=None):
         if A is not None:
-            if np.linalg.matrix_rank(A) >= f.dim:
+            self.rank_A = np.linalg.matrix_rank(A)
+            if self.rank_A >= f.dim:
                 raise Exception("Dimension error: rg(A) >= f.dim")
 
         if (A is None and b is not None) or (A is not None and b is None):
