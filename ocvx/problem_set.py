@@ -32,3 +32,17 @@ def getUnconstrainedProblems():
     ]
 
     return pd.DataFrame(P_unconstrained)
+
+def getConstrainedProblems():    
+    quad_2_d = {
+        "value": lambda x: 4 * x[0]**2 + 5 * x[1]**2 + 7 * x[1],
+        "dim": 2,
+        "grad": lambda x: np.array([8 * x[0], 10 * x[1] + 7]),
+        "hessian": lambda x: np.diag([8, 10])
+    }
+    
+    P_constrained = [
+        {"name": "quad_1", "probleme": Probleme(Function(**quad_2_d), np.array([[1, 2]]), np.array([3])), "x0": np.array([-17, 10])}
+    ]
+        
+    return pd.DataFrame(P_constrained)
