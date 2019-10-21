@@ -28,10 +28,9 @@ class GradientDescent:
             raise Exception("The gradient descent algorithm did not run.")
         if self.P.f.dim == 1:
             plt.figure(figsize=(15, 15))
-            x = np.linspace(-1 * self.save.min() - 5, self.save.max() + 5, 1000).reshape((1, -1))
+            x = np.linspace(self.save.min() - 5, self.save.max() + 5, 1000).reshape((1, -1))
             plt.plot(x.reshape((-1)), self.P.f.value(x))
             plt.scatter(self.save[:, 0], self.P.f.value(self.save[:, 0].reshape(1, -1)), 50, c="red")
-            plt.quiver(self.save[:, 0], self.P.f.value(self.save[:, 0]), self.directions[:, 0])
             plt.grid()
             plt.show()
         elif self.P.f.dim == 2:
